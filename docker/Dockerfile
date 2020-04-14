@@ -1,9 +1,10 @@
 FROM ubuntu:18.04
 
-COPY mcdeploy.key /mcdeploy.key
-ARG current_branch
+# COPY mcdeploy.key /mcdeploy.key
+ARG current_branch=master
 
 RUN apt-get -y update
+RUN apt-get install -y apt-utils
 RUN apt-get install -y \
         cmake \
         g++ \
@@ -33,9 +34,9 @@ RUN add-apt-repository ppa:git-core/ppa \
 
 
 # Clone/make repo
-ENV GIT_SSH_COMMAND "ssh -i /mcdeploy.key -o StrictHostKeyChecking=no"
-RUN git lfs clone --recursive git@github.com:fairinternal/minecraft.git
-WORKDIR minecraft
+# ENV GIT_SSH_COMMAND "ssh -i /mcdeploy.key -o StrictHostKeyChecking=no"
+RUN git lfs clone --recursive https://github.com/facebookresearch/craftassist.git  # git@github.com:fairinternal/minecraft.git
+WORKDIR craftassist
 RUN git checkout ${current_branch}
 RUN curl http://craftassist.s3-us-west-2.amazonaws.com/pubr/models_folder.tar.gz -o models_folder.tar.gz
 RUN tar -xzvf models_folder.tar.gz -C python/craftassist/models/ --strip-components 1
